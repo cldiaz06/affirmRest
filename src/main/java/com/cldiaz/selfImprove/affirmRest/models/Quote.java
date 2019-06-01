@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Quotes {
+public class Quote {
 	private String quote;
 	private String author;
 	private int length;
