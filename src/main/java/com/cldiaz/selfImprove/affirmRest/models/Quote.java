@@ -21,6 +21,6 @@ public class Quote {
 	private ArrayList<String> tags;
 	private String category;
 	private String title;
-	private Date postDate;
+	private String date;
 	private int id;
 }

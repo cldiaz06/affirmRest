@@ -13,6 +13,6 @@ import lombok.ToString;
 @NoArgsConstructor
 public class RestApiReponse {
 	
-	private String success;
+	private SuccessRequest success;
 	private Content contents;
 }
