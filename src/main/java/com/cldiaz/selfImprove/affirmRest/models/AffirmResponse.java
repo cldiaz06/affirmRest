@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestApiReponse {
+public class AffirmResponse {
 	
 	private SuccessRequest success;
 	private Content contents;
