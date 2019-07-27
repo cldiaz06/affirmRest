@@ -59,4 +59,24 @@ public class GetAffirmController {
 		
 		return "review results";
 	}
+	
+	
+	@GetMapping(value="/createEvent")
+	public String createGoogleEvents(){
+		
+		GetOauthGoogle auth = new GetOauthGoogle();
+		
+		try {
+			String result = auth.createEvent();
+			auth.getEvents();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GeneralSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "review results";
+	}
 }

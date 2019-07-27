@@ -1,5 +1,15 @@
 package com.cldiaz.selfImprove.affirmRest.services;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+import java.util.List;
+
+import org.mortbay.log.Log;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -14,34 +24,29 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.List;
 
 public class GetOauthGoogle {
 
 	private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
+    private static final String TOKENS_DIRECTORY_PATH = "token";
     
-    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
+    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-    
+    private static final String calendarId = "primary";
     
     public GetOauthGoogle() {}
     
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = GetOauthGoogle.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        
+    	InputStream in = GetOauthGoogle.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
+        
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
@@ -83,6 +88,36 @@ public class GetOauthGoogle {
                 System.out.printf("%s (%s)\n", event.getSummary(), start);
             }
         }
+    }
+    
+    public String createEvent() throws GeneralSecurityException, IOException{
+    	// Build a new authorized API client service.
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+        
+        Event affirm = new Event()
+        		.setSummary("Test creating event")
+        		.setLocation("Chicago")
+        		.setDescription("Test Creating Event");
+        
+        EventDateTime start = new EventDateTime()
+        		.setDate(new DateTime("2019-07-28"));
+        
+        affirm.setStart(start);
+        
+        EventDateTime end = new EventDateTime()
+        		.setDate(new DateTime("2019-07-29"));
+        
+        affirm.setEnd(end);
+        
+        affirm = service.events().insert(calendarId, affirm).execute();
+        
+        Log.debug("Event is created and HTML link is: " + affirm.getHtmlLink());
+        
+        return affirm.getHtmlLink();
+        
     }
 	
 }

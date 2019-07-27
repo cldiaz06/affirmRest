@@ -22,5 +22,5 @@ public class Quote {
 	private String category;
 	private String title;
 	private String date;
-	private int id;
+	private String id;
 }
