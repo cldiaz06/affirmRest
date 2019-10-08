@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
-import org.mortbay.log.Log;
+import org.springframework.stereotype.Service;
 
+import com.cldiaz.selfImprove.affirmRest.models.AffirmResponse;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -27,6 +30,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 
+@Service
 public class GetOauthGoogle {
 
 	private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
@@ -90,33 +94,37 @@ public class GetOauthGoogle {
         }
     }
     
-    public String createEvent() throws GeneralSecurityException, IOException{
+    public String createEvent(AffirmResponse affrim) throws GeneralSecurityException, IOException{
     	// Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
         
-        Event affirm = new Event()
-        		.setSummary("Test creating event")
-        		.setLocation("Chicago")
-        		.setDescription("Test Creating Event");
+        Date today = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        
+        System.out.println("Date: " + formatter.format(today));
+        
+        Event affirmEvent = new Event()
+        		.setSummary("Affirmation for today")
+        		.setDescription(affrim.getContents().getQuotes().get(0).getQuote());
         
         EventDateTime start = new EventDateTime()
-        		.setDate(new DateTime("2019-07-28"));
+        		.setDate(new DateTime(formatter.format(today)));
         
-        affirm.setStart(start);
+        affirmEvent.setStart(start);
         
         EventDateTime end = new EventDateTime()
-        		.setDate(new DateTime("2019-07-29"));
+        		.setDate(new DateTime(formatter.format(today)));
         
-        affirm.setEnd(end);
+        affirmEvent.setEnd(end);
         
-        affirm = service.events().insert(calendarId, affirm).execute();
+        affirmEvent = service.events().insert(calendarId, affirmEvent).execute();
         
-        Log.debug("Event is created and HTML link is: " + affirm.getHtmlLink());
+        //Log.debug("Event is created and HTML link is: " + affirmEvent.getHtmlLink());
         
-        return affirm.getHtmlLink();
+        return affirmEvent.getHtmlLink();
         
     }
 	

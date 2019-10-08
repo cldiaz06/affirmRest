@@ -28,6 +28,9 @@ public class GetAffirmController {
 		this.getAffirmRestService = (GetAffirmRestService) context.getBean("primary");
 	}
 	
+	@Autowired
+	private GetOauthGoogle googleEvent;
+	
 	private static final Logger log = LoggerFactory.getLogger(GetAffirmController.class);
 		
 	@GetMapping(value="/getAffirm", produces="application/json")
@@ -64,11 +67,11 @@ public class GetAffirmController {
 	@GetMapping(value="/createEvent")
 	public String createGoogleEvents(){
 		
-		GetOauthGoogle auth = new GetOauthGoogle();
-		
 		try {
-			String result = auth.createEvent();
-			auth.getEvents();
+			AffirmResponse affirm = getAffirmRestService.getAffirmRestApi();
+			
+			String result = googleEvent.createEvent(affirm);
+			googleEvent.getEvents();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
