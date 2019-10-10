@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cldiaz.selfImprove.affirmRest.Interfaces.GetAffirmRestService;
 import com.cldiaz.selfImprove.affirmRest.models.AffirmResponse;
-import com.cldiaz.selfImprove.affirmRest.services.GetOauthGoogle;
+import com.cldiaz.selfImprove.affirmRest.services.GoogleCalApi;
 
 @RestController
 @RequestMapping("/rest")
@@ -29,7 +29,7 @@ public class GetAffirmController {
 	}
 	
 	@Autowired
-	private GetOauthGoogle googleEvent;
+	private GoogleCalApi googleEvent;
 	
 	private static final Logger log = LoggerFactory.getLogger(GetAffirmController.class);
 		
@@ -44,42 +44,35 @@ public class GetAffirmController {
 		return affirm;
 	}
 	
-	
-	@GetMapping(value="/getEvents", produces="application/json")
-	public String getGoogleEvents(){
-		
-		GetOauthGoogle auth = new GetOauthGoogle();
-		
-		try {
-			auth.getEvents();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GeneralSecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return "review results";
+	@GetMapping(value="/getEvent", produces="application/json")
+	public String getGmailEvents() throws IOException, GeneralSecurityException {
+		googleEvent.getEvents();
+		return "check console";
 	}
 	
-	
 	@GetMapping(value="/createEvent")
-	public String createGoogleEvents(){
+	public String createGoogleEvents() throws IOException, GeneralSecurityException{
 		
-		try {
-			AffirmResponse affirm = getAffirmRestService.getAffirmRestApi();
+		String result = null;
+		
+		if(!googleEvent.eventExists()) {
+		
+			try {
+				AffirmResponse affirm = getAffirmRestService.getAffirmRestApi();
 			
-			String result = googleEvent.createEvent(affirm);
-			googleEvent.getEvents();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+				result = googleEvent.createEvent(affirm);
+
+			} catch (IOException e) {
+
 			e.printStackTrace();
-		} catch (GeneralSecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			} catch (GeneralSecurityException e) {
+	
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Affirm event already created.");
 		}
-		
-		return "review results";
+			
+		return result;
 	}
 }
