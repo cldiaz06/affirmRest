@@ -28,7 +28,4 @@ HELP.md
 
 ### VS Code ###
 .vscode/
-tokens/StoredCredential
-token/StoredCredential
-src/main/resources/credentials.json
-bin/main/credentials.json
+
