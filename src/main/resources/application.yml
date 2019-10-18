@@ -1,0 +1,8 @@
+affirmRest:
+  url: https://quotes.rest/qod
+spring:
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
