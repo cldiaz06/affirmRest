@@ -34,7 +34,7 @@ dependencies {
 	}
     compile 'com.google.apis:google-api-services-calendar:v3-rev305-1.23.0'
     //compile group: 'net.logstash.logback', name:'logstash-logback-encoder', version: '3.5'
-    testCompile 'org.springframwork.security:spring-security-test'
+    //testCompile 'org.springframwork.security:spring-security-test'
     //testCompile group: 'ch.qos.logback', name:'logback-classic', version: '0.9.26'
     
 }
